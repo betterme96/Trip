@@ -14,7 +14,7 @@ class UserInfoAdmin(admin.ModelAdmin):
 
 class DiaryInfoAdmin(admin.ModelAdmin):
     # 显示字段
-    list_display = ['id', 'd_title', 'd_author', 'd_date']
+    list_display = ['id', 'd_title', 'd_author', 'd_content', 'd_date']
     # 搜索字段
     search_fields = ['d_title']
     # 分页
