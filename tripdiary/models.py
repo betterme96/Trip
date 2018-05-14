@@ -40,13 +40,13 @@ class Diary(models.Model):
         (u'0', '仅自己'),
         (u'1', '所有人'),
     )
-    d_date = models.DateTimeField(auto_now_add=True)
+    d_date = models.CharField(max_length=50)
     d_title = models.CharField(max_length=20, unique=True)
     d_author = models.ForeignKey(User, on_delete=models.CASCADE,)
     d_content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return  self.d_title
+        return self.d_title
     class Meta:
         ordering = ['id']
         db_table = 'diary'

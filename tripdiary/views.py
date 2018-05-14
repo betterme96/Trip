@@ -16,7 +16,7 @@ def index(request):
 #用户登陆
 @api_view(['POST'])
 def login(request):
-    context = {'status': 400, 'content': 'null'}
+    context = {'status': 400}
     if request.method == 'POST':
         username = request.data.get('username')
         password = request.data.get('password')
@@ -26,11 +26,6 @@ def login(request):
                 context['status'] = 200
         except:
             context['status'] == 400
-        if context['status'] == 200:
-            serializer = UserSerializer(user)
-            context['content'] = serializer.data
-        else:
-            context['content'] = 'null'
         content = JSONRenderer().render(context)
         return HttpResponse(content)
     return HttpResponse(JSONRenderer(), render(context))
@@ -80,10 +75,11 @@ def diary_save(request):
         d_title = request.data.get('d_title')
         d_author = request.data.get('d_author')
         d_content = request.data.get('d_content')
+        d_date = request.data.get('d_date')
         # 先在USER表中查询出前端选中的用户对应对象
         user1 = User.manager.get(username=d_author)
         try:
-            diary = Diary(d_title=d_title, d_author=user1, d_content=d_content)
+            diary = Diary(d_title=d_title, d_author=user1, d_content=d_content,d_date=d_date)
             diary.save()
             if diary:
                 context['status'] = 200
@@ -91,6 +87,7 @@ def diary_save(request):
             context['status'] == 400
         return HttpResponse(JSONRenderer().render(context))
     return HttpResponse(JSONRenderer().render(context))
+
 #删除日记
 @api_view(['POST'])
 def diary_delete(request):
@@ -99,9 +96,10 @@ def diary_delete(request):
         #获取到对象之后序列化
         title = request.data.get('title')
         try:
-            diary = Diary.maneger.filter(d_title=title)
-            diary.delete()
-            context['status'] = 200
+            diary = Diary.manager1.filter(d_title=title)
+            if diary:
+                diary.delete()
+                context['status'] = 200
         except Exception:
             context['status'] == 500
         return HttpResponse(JSONRenderer().render(context))
@@ -112,13 +110,13 @@ def diary_update(request):
     context = {'status': 400}
     if request.method == 'POST':
         #获取到对象之后序列化
-        title = request.data.get('title')
-        title_new = request.data.get('title_new')
-        #d_author = request.data.get('d_author')
-        content_new = request.data.get('content_new')
+        d_title = request.data.get('d_title')
+        d_title_new = request.data.get('d_title_new')
+        d_content = request.data.get('d_content')
+        context['status'] = 100
         try:
-            diary = Diary.maneger.filter(d_title=title)
-            diary.update(d_title=title_new, d_content=content_new)
+            diary = Diary.manager1.filter(d_title=d_title)
+            diary.update(d_title=d_title_new, d_content=d_content)
             context['status'] = 200
         except Exception:
             context['status'] == 500
@@ -132,34 +130,36 @@ def userdiary(request):
     if request.method == 'POST':
         username = request.data.get('username')
         try:
-            diary_list = Diary.maneger.filter(d_author__username=username)
-            if diary_list.count()!=0:
+            diary_list = Diary.manager1.filter(d_author__username=username).values_list('id', 'd_title', 'd_author__username', 'd_content', 'd_date')
+            if diary_list.count()!= 0:
                 context['status'] = 200
-                serialize = serializers.serialize("json", diary_list)
+                diary_list1 = convert_to_json_string(diary_list)
                 # 这里先将json对象转化为列表进行存储缺少这一步的话将无法解析。
-                context['content'] = json.loads(serialize)
         except:
             context['status'] == 500
-        content = JSONRenderer().render(context)
-        return HttpResponse(content)
+        return HttpResponse(diary_list1)
     return HttpResponse(JSONRenderer(), render(context))
+
 
 #查询所有用户的日记信息
 @api_view(['POST'])
 def alldiary(request):
     context = {'status': 400, 'content': 'null'}
     if request.method == 'POST':
-        diary_list = Diary.manager1.all().values_list('d_title', 'd_author__username', 'd_content')
+        diary_list = Diary.manager1.all().values_list('id', 'd_title', 'd_author__username', 'd_content','d_date')
         ask_list1 = convert_to_json_string(diary_list)
         return HttpResponse(ask_list1)
     return HttpResponse(JSONRenderer().render(context))
 
 def convert_to_json_string(data):
-        return json.dumps({'ask':
-                           [{'title': i[0],
-                             'author': i[1],
-                             'content':i[2],
+        return json.dumps({'diary':
+                           [{'id': int(i[0]),
+                             'title': i[1],
+                             'author': i[2],
+                             'content':i[3],
+                             'date':i[4],
                              } for i in data]}, indent=4)
+
 
 
 

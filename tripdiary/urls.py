@@ -1,5 +1,8 @@
 from django.conf.urls import url
+from django.template.context_processors import static
 from django.urls import path
+
+from Trip import settings
 from tripdiary import views
 urlpatterns = [
     #path('', views.index, name='index'),
