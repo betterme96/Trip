@@ -41,7 +41,7 @@ class Diary(models.Model):
         (u'1', '所有人'),
     )
     d_date = models.CharField(max_length=50)
-    d_title = models.CharField(max_length=20, unique=True)
+    d_title = models.CharField(max_length=20)
     d_author = models.ForeignKey(User, on_delete=models.CASCADE,)
     d_content = models.CharField(max_length=1000)
 
