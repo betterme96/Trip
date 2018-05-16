@@ -163,5 +163,53 @@ def convert_to_json_string(data):
                              } for i in data]}, indent=4)
 
 
+#添加评论
+@api_view(['POST'])
+def credit_save(request):
+    context = {'status': 400}
+    if request.method == 'POST':
+        #获取到对象之后序列化
+        c_date = request.data.get('c_date')
+        c_diary = request.data.get('c_diary')
+        c_author = request.data.get('c_author')
+        c_content = request.data.get('c_content')
+        # 在Diary表中查询出前端选中的日记对应对象
+        diary = Diary.manager1.get(id=c_diary)
+        #在Uer表中查询出前端登录的用户对应对象
+        user = User.manager.get(username=c_author)
+        try:
+            diary = Credit(c_date=c_date, c_diary=diary, c_author=user, c_content=c_content)
+            diary.save()
+            if diary:
+                context['status'] = 200
+        except Exception:
+            context['status'] == 500
+        return HttpResponse(JSONRenderer().render(context))
+    return HttpResponse(JSONRenderer().render(context))
+
+# 查询指定日记的所有评论
+@api_view(['POST'])
+def diary_credit(request):
+    context = {'status': 400, 'content': 'null'}
+    if request.method == 'POST':
+        c_diary = request.data.get('c_diary')
+        try:
+            credit_list = Credit.manager2.filter(c_diary=c_diary)
+            if credit_list.count()!= 0:
+                credit_list=credit_list.values_list('id', 'c_author', 'c_content', 'c_date')
+                context['status'] = 200
+            credit_list1 = convert_to_json_string1(credit_list)
+        except:
+            context['status'] == 500
+        return HttpResponse(credit_list1)
+    return HttpResponse(JSONRenderer().render(context))
+
+def convert_to_json_string1(data):
+    return json.dumps({'credit':
+                           [{'id': int(i[0]),
+                            'author': i[1],
+                            'content': i[2],
+                            'date': i[3],
+                            } for i in data]}, indent=4)
 
 

@@ -54,9 +54,12 @@ class Diary(models.Model):
     manager1 = DiaryManager()
 
 class Credit(models.Model):
-    c_date = models.DateTimeField(default=timezone.now)
+    c_date = models.CharField(max_length=50)
     c_diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
     c_author = models.ForeignKey(User, on_delete=models.CASCADE,)
     c_content = models.CharField(max_length=200)
+    class Meta:
+        ordering = ['id']
+        db_table = 'credit'
 
 

@@ -14,4 +14,6 @@ urlpatterns = [
     path('deletediary', views.diary_delete, name='deletediary'),
     path('userdiary', views.userdiary, name='userdiary'),
     path('alldiary', views.alldiary, name='alldiary'),
+    path('savecredit', views.credit_save, name='savecredit'),
+    path('showcredit', views.diary_credit, name='showcredit'),
 ]
