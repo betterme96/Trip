@@ -61,5 +61,5 @@ class Credit(models.Model):
     class Meta:
         ordering = ['id']
         db_table = 'credit'
-
+    manager2 = DiaryManager()
 

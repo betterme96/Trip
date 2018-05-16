@@ -132,7 +132,7 @@ def userdiary(request):
     if request.method == 'POST':
         username = request.data.get('username')
         try:
-            diary_list = Diary.manager1.filter(d_author__username=username)#.values_list('id', 'd_title', 'd_author__username', 'd_content', 'd_date')
+            diary_list = Diary.manager1.filter(d_author__username=username)
             if diary_list.count()!= 0:
                 diary_list=diary_list.values_list('id', 'd_title', 'd_author__username', 'd_content', 'd_date')
                 context['status'] = 200
@@ -192,11 +192,11 @@ def credit_save(request):
 def diary_credit(request):
     context = {'status': 400, 'content': 'null'}
     if request.method == 'POST':
-        c_diary = request.data.get('c_diary')
+        id = request.data.get('note_id')
         try:
-            credit_list = Credit.manager2.filter(c_diary=c_diary)
-            if credit_list.count()!= 0:
-                credit_list=credit_list.values_list('id', 'c_author', 'c_content', 'c_date')
+            credit_list = Credit.manager2.filter(c_diary=id)
+            if credit_list.count() != 0:
+                credit_list = credit_list.values_list('id', 'c_author', 'c_content', 'c_date')
                 context['status'] = 200
             credit_list1 = convert_to_json_string1(credit_list)
         except:
