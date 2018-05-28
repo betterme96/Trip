@@ -25,7 +25,7 @@ class DiaryInfoAdmin(admin.ModelAdmin):
 class CreditAdmin(admin.ModelAdmin):
     list_display = ['id', 'c_author', 'c_diary', 'c_content', 'c_date']
     list_per_page = 20
-    ordering = ('c_date',)
+    ordering = ('-c_date',)
 
 admin.site.register(User, UserInfoAdmin)
 admin.site.register(Diary, DiaryInfoAdmin)

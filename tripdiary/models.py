@@ -59,7 +59,8 @@ class Credit(models.Model):
     c_author = models.ForeignKey(User, on_delete=models.CASCADE,)
     c_content = models.CharField(max_length=200)
     class Meta:
-        ordering = ['id']
+        ordering = ['-c_date']
         db_table = 'credit'
+
     manager2 = DiaryManager()
 

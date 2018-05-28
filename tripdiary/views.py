@@ -25,7 +25,7 @@ def login(request):
             if user:
                 context['status'] = 200
         except:
-            context['status'] == 400
+            context['status'] = 500
         content = JSONRenderer().render(context)
         return HttpResponse(content)
     return HttpResponse(JSONRenderer(), render(context))
@@ -44,7 +44,7 @@ def register(request):
             if user:
                 context['status'] = 200
         except Exception:
-            context['status'] == 400
+            context['status'] = 500
         return HttpResponse(JSONRenderer().render(context))
     return HttpResponse(JSONRenderer().render(context))
 
@@ -177,9 +177,10 @@ def credit_save(request):
         diary = Diary.manager1.get(id=c_diary)
         #在Uer表中查询出前端登录的用户对应对象
         user = User.manager.get(username=c_author)
+
         try:
-            diary = Credit(c_date=c_date, c_diary=diary, c_author=user, c_content=c_content)
-            diary.save()
+            credit = Credit(c_date=c_date, c_diary=diary, c_author=user, c_content=c_content)
+            credit.save()
             if diary:
                 context['status'] = 200
         except Exception:
@@ -196,7 +197,7 @@ def diary_credit(request):
         try:
             credit_list = Credit.manager2.filter(c_diary=id)
             if credit_list.count() != 0:
-                credit_list = credit_list.values_list('id', 'c_author', 'c_content', 'c_date')
+                credit_list = credit_list.values_list('id', 'c_author__username', 'c_content', 'c_date')
                 context['status'] = 200
             credit_list1 = convert_to_json_string1(credit_list)
         except:
