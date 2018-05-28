@@ -43,7 +43,7 @@ class Diary(models.Model):
     d_date = models.CharField(max_length=50)
     d_title = models.CharField(max_length=20)
     d_author = models.ForeignKey(User, on_delete=models.CASCADE,)
-    d_content = models.CharField(max_length=1000)
+    d_content = models.CharField(max_length=10000)
 
     def __str__(self):
         return self.d_title
