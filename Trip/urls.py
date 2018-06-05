@@ -20,8 +20,9 @@ from django.urls import path
 from Trip import settings
 from tripdiary import views
 from django.conf.urls import include
-
+from django.contrib.staticfiles.urls import  static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tripdiary/', include('tripdiary.urls')),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
